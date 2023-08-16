@@ -3,13 +3,22 @@ from textual.validation import Function, Number, ValidationResult, Validator
 from textual.widgets import Input, Label, Pretty, Static, Footer, Button
 from textual.containers import Container, Horizontal, Vertical, VerticalScroll, Center
 import mongoengine
+import importlib.resources as ir
+import sys
 
-from models import Acronym
+from .models import Acronym
 
+def load_css(name):
+    module = sys.modules[name]
+    m_path = ir.files(module)
+    with ir.as_file(m_path / f"{name}.css") as f_path:
+        with open(f_path) as in_file:
+            return in_file.read()
 
 class InputApp(App):
 
-    CSS_PATH = "acronyms.css"
+    # CSS_PATH = "acronyms.css"
+    CSS = load_css(__name__)
 
     def __init__(self):
         super().__init__()
@@ -28,11 +37,10 @@ class InputApp(App):
                 id="buttons"
                 ),
             VerticalScroll(
-                Static(" ".join(f"Label number {n}" for n in range(1000)),
+                Static(""),
                 id="content"
                 ),
             id="body"
-            )
         )
 
         yield Center(Label(f"Initial message"), id="message")
@@ -50,17 +58,37 @@ class InputApp(App):
             self.replace_message("No matches")
         else:
             self.replace_message(f"{self.me_query.count()} acronyms")
-            for acr in self.me_query:
-                self.query_one("#buttons").mount(
-                    Button(acr.acronym)
-                )
+            self.btns = []
+            if value:
+                for acr in self.me_query.order_by("acronym"):
+                    self.query_one("#buttons").mount(
+                        btn := ExplainButton(acr)
+                    )
+                    self.btns.append(btn)
 
     def replace_message(self, msg):
         self.query_one("#message").remove()
         self.mount(Center(Label(msg), id="message"))
 
+class ExplainButton(Button):
+    def __init__(self, acronym):
+        super().__init__(acronym.acronym)
+        self.title = acronym.title
+        self.explanation = acronym.explanation
+        print("Acronym:", acronym.acronym, self.title, self.explanation)
+
+    def on_button_pressed(self):
+        app.query_one("#content").remove()
+        app.query_one("#body").mount(
+            VerticalScroll(
+                Static(f"{self.title}\n\n{self.explanation}"),
+                id="content"
+            )
+        )
+
+app = InputApp()
+dbcon = mongoengine.connect("acronyms")
+
 
 if __name__ == "__main__":
-    app = InputApp()
-    dbcon = mongoengine.connect("acronyms")
     app.run()

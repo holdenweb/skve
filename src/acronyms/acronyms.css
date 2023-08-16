@@ -4,7 +4,6 @@
 
 #content {
     margin: 0;
-    color: yellow 50%;
 }
 
 #body {
@@ -25,7 +24,7 @@ Button {
     height: 1;
     min-width: 7;
     border: none;
-
+    text-align: left;
 }
 
 Horizontal {
@@ -34,5 +33,4 @@ Horizontal {
 }
 
 Vertical, VerticalScroll {
-    background: red 20%;
 }
