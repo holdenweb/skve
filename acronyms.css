@@ -1,0 +1,38 @@
+#question-box {
+    height: 4;
+}
+
+#content {
+    margin: 0;
+    color: yellow 50%;
+}
+
+#body {
+    border: blue 100%;
+}
+
+#buttons {
+    width: 10;
+}
+
+#message {
+    height: 3;
+    border: white 50%;
+}
+
+Button {
+    width: 6;
+    height: 1;
+    min-width: 7;
+    border: none;
+
+}
+
+Horizontal {
+    background: blue 40%;
+    align: left top;
+}
+
+Vertical, VerticalScroll {
+    background: red 20%;
+}
