@@ -15,4 +15,6 @@ class Acronym(me.Document):
     text_explanation = me.StringField()
 
 
+class Person(me.DynamicDocument):
+    pass
 

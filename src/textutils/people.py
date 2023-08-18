@@ -1,24 +1,19 @@
 from textual.app import App, ComposeResult
 from textual.validation import Function, Number, ValidationResult, Validator
-from textual.widgets import Input, Label, Pretty, Static, Footer, Button
-from textual.containers import Container, Horizontal, Vertical, VerticalScroll, Center
+from textual.widgets import Input, Label, Pretty, Static, Footer, Button, DataTable
+from textual.containers import Container, Horizontal, HorizontalScroll, Vertical, VerticalScroll, Center
 import mongoengine
 import importlib.resources as ir
+import os
 import sys
 
-from .models import Acronym
+from .models import Person
 
-def load_css(name):
-    module = sys.modules[name]
-    m_path = ir.files(module)
-    with ir.as_file(m_path / f"{name}.css") as f_path:
-        with open(f_path) as in_file:
-            return in_file.read()
+os.environ["TEXTUAL"] = "debug,devtools"
 
-class InputApp(App):
+class PeopleApp(App):
 
-    # CSS_PATH = "acronyms.css"
-    CSS = load_css(__name__)
+    CSS_PATH = "people.css"
 
     def __init__(self):
         super().__init__()
@@ -26,8 +21,9 @@ class InputApp(App):
 
     def compose(self) -> ComposeResult:
         yield Horizontal(
+            Label("Name: "),
             Input(
-                placeholder="Enter (the beginning of) an acronym...",
+                placeholder="Enter (part of) a person's name...",
                 id="in_val,"
                 ),
             id="question-box"
@@ -35,11 +31,11 @@ class InputApp(App):
         yield Horizontal(
             VerticalScroll(
                 id="buttons"
-                ),
+            ),
             VerticalScroll(
-                Static(""),
+                Static("This will be the results"),
                 id="content"
-                ),
+            ),
             id="body"
         )
 
@@ -52,17 +48,17 @@ class InputApp(App):
             btn.remove()
         in_string = self.query_one(Input)
         value = in_string.value
-        self.me_query = Acronym.objects(acronym__istartswith=value)
+        self.me_query = Person.objects(name__icontains=value)
         count = self.me_query.count()
         if count == 0:
             self.replace_message("No matches")
         else:
-            self.replace_message(f"{self.me_query.count()} acronyms")
+            self.replace_message(f"{self.me_query.count()} people")
             self.btns = []
             if value:
-                for acr in self.me_query.order_by("acronym"):
+                for acr in self.me_query:
                     self.query_one("#buttons").mount(
-                        btn := ExplainButton(acr)
+                        btn := PersonButton(acr)
                     )
                     self.btns.append(btn)
 
@@ -70,25 +66,40 @@ class InputApp(App):
         self.query_one("#message").remove()
         self.mount(Center(Label(msg), id="message"))
 
-class ExplainButton(Button):
-    def __init__(self, acronym):
-        super().__init__(acronym.acronym)
-        self.title = acronym.title
-        self.explanation = acronym.explanation
-        print("Acronym:", acronym.acronym, self.title, self.explanation)
+class PersonButton(Button):
+
+    def __init__(self, person):
+        super().__init__(person.name)
+        self.person = person
 
     def on_button_pressed(self):
         app.query_one("#content").remove()
         app.query_one("#body").mount(
-            VerticalScroll(
-                Static(f"{self.title}\n\n{self.explanation}"),
-                id="content"
+            VerticalScroll(id="content")
+        )
+        self.add_new_row("Key", "Value")
+        self.add_new_row("-"*15, "-"*45)
+        self.add_new_row("Name", self.person.name)
+        for k in self.person._fields_ordered:
+            if k not in {'name', 'id'}:
+                self.add_new_row(k.capitalize(), getattr(self.person, k))
+        app.log(app.css_tree)
+
+    def add_new_row(self, key, value):
+
+        app.query_one("#content").mount(
+            Horizontal(
+                Vertical(Static(key), classes="key"),
+                Vertical(Static(str(value)), classes="value"),
+                classes="result-row"
             )
         )
 
-app = InputApp()
+app = PeopleApp()
 dbcon = mongoengine.connect("acronyms")
 
+def main(args=sys.argv):
+    return app.run()
 
 if __name__ == "__main__":
-    app.run()
+    main()

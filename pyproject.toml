@@ -1,8 +1,8 @@
 [tool.poetry]
-name = "acronyms"
-version = "0.1.0"
+name = "textutils"
+version = "0.2.0"
 homepage = "https://holdenweb.com/"
-description = "Acronym maintenance with Modern Text User Interface"
+description = "Acronym maintenance with modern Text User Interface"
 authors = ["Steve Holden <steve@holdenweb.com>"]
 license = "MIT"
 readme = "README.md"
@@ -22,11 +22,11 @@ classifiers = [
     "Typing :: Typed",
 ]
 include = [
-    "acronyms from src"
+"textutils from src"
 ]
 
-[scripts]
-    acros = "acronyms:main"
+[tool.poetry.scripts]
+acros = "textutils.acronyms:main"
 
 
 [tool.poetry.dependencies]
