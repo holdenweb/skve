@@ -78,19 +78,17 @@ class PersonButton(Button):
             VerticalScroll(id="content")
         )
         self.add_new_row("Key", "Value")
-        self.add_new_row("-"*15, "-"*45)
         self.add_new_row("Name", self.person.name)
         for k in self.person._fields_ordered:
             if k not in {'name', 'id'}:
                 self.add_new_row(k.capitalize(), getattr(self.person, k))
-        app.log(app.css_tree)
 
-    def add_new_row(self, key, value):
+    def add_new_row(self, key, value, w_type=Static):
 
         app.query_one("#content").mount(
             Horizontal(
-                Vertical(Static(key), classes="key"),
-                Vertical(Static(str(value)), classes="value"),
+                Vertical(w_type(key), classes="key"),
+                Vertical(w_type(str(value)), classes="value"),
                 classes="result-row"
             )
         )

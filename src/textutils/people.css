@@ -24,15 +24,20 @@
 }
 
 .key {
-    width: 1fr;
+    width: 2fr;
     height: auto;
-    margin: 1 0 0 0;
+    margin-right: 1;
+    border-right: white 100%;
 }
 
 .value {
-    width: 7fr;
+    width: 8fr;
     height: auto;
-    margin: 1 0 0 0;
+    border-right: white 100%;
+}
+
+.result-row {
+    border-bottom: solid white;
 }
 
 Button {
