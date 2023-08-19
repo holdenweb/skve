@@ -27,17 +27,15 @@
     width: 2fr;
     height: auto;
     margin-right: 1;
-    border-right: white 100%;
 }
 
 .value {
     width: 8fr;
     height: auto;
-    border-right: white 100%;
 }
 
 .result-row {
-    border-bottom: solid white;
+    border: none;
 }
 
 Button {

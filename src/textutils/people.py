@@ -77,27 +77,29 @@ class PersonButton(Button):
         app.query_one("#body").mount(
             VerticalScroll(id="content")
         )
-        self.add_new_row("Key", "Value")
-        self.add_new_row("Name", self.person.name)
+        self.add_new_row("Key", "Value", clickable=False)
+        self.add_new_row("Name", self.person.name, clickable=False)
         for k in self.person._fields_ordered:
             if k not in {'name', 'id'}:
                 self.add_new_row(k.capitalize(), getattr(self.person, k))
 
-    def add_new_row(self, key, value, w_type=Static):
-
+    def add_new_row(self, key, value, w_type=Static, clickable=True):
         app.query_one("#content").mount(
-            Horizontal(
-                Vertical(w_type(key), classes="key"),
-                Vertical(w_type(str(value)), classes="value"),
-                classes="result-row"
-            )
+            ResultRow(key, str(value), clickable=clickable)
         )
+
+class ResultRow(Horizontal):
+
+    def __init__(self, key, value, clickable=True):
+        super().__init__()
+        self.key = key
+        self.value = value
+        self.clickable = clickable
+        self.classes = "result-row"
+
+    def compose(self):
+        yield Vertical(Static(self.key), classes="key")
+        yield Vertical(Static(str(self.value)), classes="value")
 
 app = PeopleApp()
 dbcon = mongoengine.connect("acronyms")
-
-def main(args=sys.argv):
-    return app.run()
-
-if __name__ == "__main__":
-    main()
