@@ -38,8 +38,16 @@
     border: none;
 }
 
+.bg-yellow {
+    background: blue 50%;
+}
+
+.bg-red {
+    background: blue 0%;
+}
+
 Button {
-    width: 100%;
+    width: auto;
     height: 1;
     min-width: 7;
     border: none;
@@ -47,7 +55,7 @@ Button {
 }
 
 Horizontal {
-    background: blue 40%;
+    background: blue 50%;
     align: left top;
 }
 

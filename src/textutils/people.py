@@ -3,13 +3,16 @@ from textual.validation import Function, Number, ValidationResult, Validator
 from textual.widgets import Input, Label, Pretty, Static, Footer, Button, DataTable
 from textual.containers import Container, Horizontal, HorizontalScroll, Vertical, VerticalScroll, Center
 import mongoengine
+
 import importlib.resources as ir
 import os
 import sys
+from itertools import cycle
 
 from .models import Person
 
 os.environ["TEXTUAL"] = "debug,devtools"
+
 
 class PeopleApp(App):
 
@@ -17,7 +20,6 @@ class PeopleApp(App):
 
     def __init__(self):
         super().__init__()
-
 
     def compose(self) -> ComposeResult:
         yield Horizontal(
@@ -53,6 +55,7 @@ class PeopleApp(App):
         if count == 0:
             self.replace_message("No matches")
         else:
+            self.bg_class = cycle(("bg-yellow", "bg-red"))
             self.replace_message(f"{self.me_query.count()} people")
             self.btns = []
             if value:
@@ -85,7 +88,7 @@ class PersonButton(Button):
 
     def add_new_row(self, key, value, w_type=Static, clickable=True):
         app.query_one("#content").mount(
-            ResultRow(key, str(value), clickable=clickable)
+            ResultRow(key, str(value))
         )
 
 class ResultRow(Horizontal):
@@ -95,11 +98,12 @@ class ResultRow(Horizontal):
         self.key = key
         self.value = value
         self.clickable = clickable
-        self.classes = "result-row"
+        self.bg_class = next(app.bg_class)
+        self.classes = f"result-row {self.bg_class}"
 
     def compose(self):
-        yield Vertical(Static(self.key), classes="key")
-        yield Vertical(Static(str(self.value)), classes="value")
+        yield Vertical(Static(self.key), classes=f"key {self.bg_class}")
+        yield Vertical(Static(str(self.value)), classes=f"value {self.bg_class}")
 
 app = PeopleApp()
 dbcon = mongoengine.connect("acronyms")
