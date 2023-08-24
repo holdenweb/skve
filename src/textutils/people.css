@@ -1,4 +1,48 @@
+Screen, ModalScreen {
+    align: center middle;
+}
+
+#input-row {
+    align: left bottom;
+    height: 1fr;
+    border: green;
+}
+
+#input-key {
+    width: 1fr;
+    border: heavy blue;
+}
+
+#input-value {
+    width: 4fr;
+    border: heavy blue;
+}
+
+#label-and-buttons {
+    border: heavy yellow;
+    align: center top;
+    height: 4;
+}
+
+#dialog {
+    background: blue 75%;
+    border: heavy white;
+    height: 80%;
+    width: 80%;
+}
+
 #question-box {
+    height: auto;
+}
+
+#in-val {
+    width: 1fr;
+    border: yellow 100%;
+}
+
+#add-person {
+    width: 5;
+    min-width: 1;
     height: 3;
 }
 
@@ -19,10 +63,6 @@
     border: none;
 }
 
-.result-row {
-    height: auto;
-}
-
 .key {
     width: 2fr;
     height: auto;
@@ -35,28 +75,27 @@
 }
 
 .result-row {
+    height: auto;
     border: none;
 }
 
 .bg-yellow {
-    background: blue 50%;
+    background: white 15%;
 }
 
 .bg-red {
-    background: blue 0%;
+    background: white 10%;
 }
 
 Button {
     width: auto;
     height: 1;
-    min-width: 7;
     border: none;
     text-align: left;
 }
 
-Horizontal {
-    background: blue 50%;
-    align: left top;
+#add-person {
+    border: red 100%;
 }
 
 VerticalScroll {
