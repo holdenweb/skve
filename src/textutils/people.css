@@ -1,103 +1,64 @@
-Screen, ModalScreen {
-    align: center middle;
-}
 
-#input-row {
-    align: left bottom;
-    height: 1fr;
-    border: green;
-}
-
-#input-key {
-    width: 1fr;
-    border: heavy blue;
-}
-
-#input-value {
-    width: 4fr;
-    border: heavy blue;
-}
-
-#label-and-buttons {
-    border: heavy yellow;
-    align: center top;
-    height: 4;
-}
-
-#dialog {
-    background: blue 75%;
-    border: heavy white;
-    height: 80%;
-    width: 80%;
-}
-
-#question-box {
-    height: auto;
-}
-
-#in-val {
-    width: 1fr;
-    border: yellow 100%;
-}
-
-#add-person {
-    width: 5;
-    min-width: 1;
+InputStripe {
     height: 3;
-}
-
-#content {
-    width: 8fr;
+    border: green 100%;
 }
 
 #body {
-    border: yellow 100%;
-}
-
-#buttons {
-    width: 2fr;
+    height: 1fr;
 }
 
 #message {
     height: 1;
+}
+
+Horizontal {
+    height: auto;
+}
+
+Vertical {
+    height: auto;
+}
+
+VerticalScroll {
+    background: green 100%;
+    border: blue 100%;
+}
+
+Button {
+    height: 1;
     border: none;
 }
 
+.edit-button-col {
+    align: left top;
+    max-width: 3;
+}
+
+.edit-button {
+    min-width: 3;
+    height: 1;
+}
+
 .key {
-    width: 2fr;
-    height: auto;
+    width: 1fr;
+    min-height: 1;
     margin-right: 1;
 }
 
 .value {
-    width: 8fr;
-    height: auto;
+    width: 6fr;
+    min-height: 1;
 }
 
-.result-row {
-    height: auto;
-    border: none;
+#buttons {
+    width: 18;
 }
 
-.bg-yellow {
-    background: white 15%;
-}
-
-.bg-red {
+.bg-one {
     background: white 10%;
 }
 
-Button {
-    width: auto;
-    height: 1;
-    border: none;
-    text-align: left;
-}
-
-#add-person {
-    border: red 100%;
-}
-
-VerticalScroll {
-    border: green 100%;
+.bg-two {
+    background: white 5%;
 }
