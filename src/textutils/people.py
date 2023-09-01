@@ -1,19 +1,13 @@
 from textual.app import App, ComposeResult
-from textual.reactive import reactive
-from textual.validation import Function, Number, ValidationResult, Validator
-from textual.widget import Widget
-from textual.widgets import Input, Label, Pretty, Static, Footer, Button, DataTable, TextArea
-from textual.containers import Container, Horizontal, HorizontalScroll, Vertical, VerticalScroll, Center, Grid
-from textual.screen import Screen, ModalScreen
-from textual.events import InputEvent
+from textual.widgets import Input, Label, Static, Button, TextArea
+from textual.containers import Horizontal, Vertical, VerticalScroll, Center
+from textual.screen import Screen
 from textual.document import Document
 
 from textutils.key_value_edit import KeyValueEditScreen
 import mongoengine
 
-import importlib.resources as ir
 import os
-import sys
 from itertools import cycle
 
 from .models import Person
@@ -109,20 +103,18 @@ class ResultRow(Horizontal):
         self.bg_class = next(app.bg_class)
         self.classes = f"result-row {self.bg_class}"
 
-    def compose(self):
-        yield Vertical(Static(self.key), classes=f"key {self.bg_class}")
-        yield Vertical(Static(str(self.value)), classes=f"value {self.bg_class}")
-        yield Vertical(Button(label="#", classes="edit-button"), classes="edit-button-col")
-
-    def on_button_pressed(self):
+    def on_click(self, e):
+        print("CLICK:", e)
         app.push_screen(KeyValueEditScreen(self.key, self.value), self.stash_result)
-        print("RESULTROW TREE:")
-        self.log(self.tree)
+
+    def compose(self):
+        yield Vertical(Static(self.key, classes=f"key {self.bg_class}"), classes="key-col")
+        yield Vertical(Static(self.value, classes=f"value {self.bg_class}"), classes="value-col")
 
     def stash_result(self, return_value):
         if return_value is not None:
             self.key, self.value = return_value
-            key_f, value_f, button = self.query(Static)
+            key_f, value_f = self.query_one(".key"), self.query_one(".value")
             key_f.update(self.key)
             value_f.update(self.value)
 

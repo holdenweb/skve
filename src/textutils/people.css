@@ -30,25 +30,24 @@ Button {
     border: none;
 }
 
-.edit-button-col {
-    align: left top;
-    max-width: 3;
-}
-
-.edit-button {
-    min-width: 3;
-    height: 1;
-}
-
-.key {
+.key-col {
     width: 1fr;
     min-height: 1;
     margin-right: 1;
 }
 
-.value {
+.key {
+    height: auto;
+}
+
+.value-col {
     width: 6fr;
     min-height: 1;
+}
+
+.value {
+    background: green 100%;
+    height: auto;
 }
 
 #buttons {
