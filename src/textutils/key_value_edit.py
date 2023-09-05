@@ -1,13 +1,13 @@
 from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical, Center
-from textual.widgets import Input, TextArea, Button
+from textual.widgets import Input, TextArea, Button, Static
 from textual.screen import ModalScreen
 
 class KeyValueEditScreen(ModalScreen):
 
     DEFAULT_CSS = """\
 KeyValueEditScreen {
-    border: $boost 100%;
+    background: $primary 100%;
 }
 
 #input-row {
@@ -18,20 +18,26 @@ KeyValueEditScreen {
     width: 7fr;
     height: auto;
     min-height: 5;
-    border: red 100%;
+    border: yellow 100%;
+    background: $primary 100%;
 }
 
 #input-key {
-    width: 2fr;
-    border: red 100%;
+    width: 7fr;
+    border: yellow 100%;
+    background: $primary 100%;
 }
 
 #label-and-buttons {
     width: 100%;
     align-horizontal: center;
     height: auto;
-    border: black 100%;
-    background: green 100%;
+    border: yellow 100%;
+}
+
+.title {
+    text-style: bold;
+    width: 1fr;
 }
 """
 
@@ -41,11 +47,16 @@ KeyValueEditScreen {
         self.value = value
         self.key_field = Input(id="input-key")
         self.value_field = TextArea(id="input-value")
+        self.value_field.show_line_numbers = False
 
     def compose(self) -> ComposeResult:
         with Vertical(id="dialog"):
             yield Horizontal(
-                self.key_field,
+                Static("Key", classes="title"),
+                self.key_field
+            )
+            yield Horizontal(
+                Static("Value", classes="title"),
                 self.value_field,
                 id="input-row"
             )
@@ -61,8 +72,6 @@ KeyValueEditScreen {
         self.key_field.value = self.key
         self.value_field.load_text(self.value)
         self.refresh()
-        print("NEWRECORDSCREEN TREE")
-        self.log(self.css_tree)
 
     def on_button_pressed(self: ModalScreen, event: Button.Pressed) -> None:
         id = event.button.id

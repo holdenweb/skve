@@ -1,7 +1,14 @@
+Screen {
+    background: $primary 100%;
+}
 
 InputStripe {
     height: 3;
-    border: green 100%;
+    border: yellow 100%;
+}
+
+#in-val {
+    border: none;
 }
 
 #body {
@@ -21,8 +28,8 @@ Vertical {
 }
 
 VerticalScroll {
-    background: green 100%;
-    border: blue 100%;
+    background: $primary 100%;
+    border: yellow 100%;
 }
 
 Button {
@@ -37,6 +44,7 @@ Button {
 }
 
 .key {
+    background: $secondary 100%;
     height: auto;
 }
 
@@ -46,7 +54,7 @@ Button {
 }
 
 .value {
-    background: green 100%;
+    background: $secondary 100%;
     height: auto;
 }
 

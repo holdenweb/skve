@@ -3,6 +3,7 @@ from textual.widgets import Input, Label, Static, Button, TextArea
 from textual.containers import Horizontal, Vertical, VerticalScroll, Center
 from textual.screen import Screen
 from textual.document import Document
+from rich.text import Text
 
 from textutils.key_value_edit import KeyValueEditScreen
 import mongoengine
@@ -21,7 +22,6 @@ class PeopleApp(App):
 
     def on_mount(self):
         self.push_screen(MainScreen())
-        self.screen.styles.background = "blue"
 
 class MainScreen(Screen):
 
@@ -37,6 +37,9 @@ class MainScreen(Screen):
             ),
             id="body"
         )
+
+        # BUTTONS GO HERE ...
+
         yield Center(Label(f"Initial message"), id="message")
 
     def on_input_changed(self, event: Input.Changed) -> None:
@@ -102,21 +105,27 @@ class ResultRow(Horizontal):
         self.value = value
         self.bg_class = next(app.bg_class)
         self.classes = f"result-row {self.bg_class}"
+        self.key_field = Static(classes=f"key {self.bg_class}")
+        self.value_field = Static(classes=f"value {self.bg_class}")
 
     def on_click(self, e):
-        print("CLICK:", e)
         app.push_screen(KeyValueEditScreen(self.key, self.value), self.stash_result)
 
     def compose(self):
-        yield Vertical(Static(self.key, classes=f"key {self.bg_class}"), classes="key-col")
-        yield Vertical(Static(self.value, classes=f"value {self.bg_class}"), classes="value-col")
+        yield Vertical(self.key_field, classes="key-col")
+        yield Vertical(self.value_field, classes="value-col")
+
+    def on_mount(self):
+        self.update()
 
     def stash_result(self, return_value):
         if return_value is not None:
             self.key, self.value = return_value
-            key_f, value_f = self.query_one(".key"), self.query_one(".value")
-            key_f.update(self.key)
-            value_f.update(self.value)
+            self.update()
+
+    def update(self):
+        self.key_field.update(Text(text=self.key, style="bold white"))
+        self.value_field.update(Text(text=self.value))
 
 app = PeopleApp()
 dbcon = mongoengine.connect("acronyms")
