@@ -12,10 +12,6 @@ KeyValueEditScreen {
     background: $primary 100%;
 }
 
-#input-row {
-    height: 1fr;
-}
-
 #input-value {
     width: 7fr;
     height: auto;
@@ -28,13 +24,6 @@ KeyValueEditScreen {
     width: 7fr;
     border: yellow 100%;
     background: $primary 100%;
-}
-
-#label-and-buttons {
-    width: 100%;
-    align-horizontal: center;
-    height: auto;
-    border: yellow 100%;
 }
 
 .title {
@@ -59,11 +48,9 @@ KeyValueEditScreen {
             )
             yield Horizontal(
                 Static("Value", classes="title"),
-                self.value_field,
-                id="input-row"
+                self.value_field
             )
             yield SaveCancel(self.callback)
-            yield Static("Underneath the buttons")
 
     def callback(self, save):
         retval = (self.key_field.value, self.value_field.text) if save else None

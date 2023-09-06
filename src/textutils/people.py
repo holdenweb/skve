@@ -37,10 +37,7 @@ class MainScreen(Screen):
             ),
             id="body"
         )
-
-        # BUTTONS GO HERE ...
-
-        yield Center(Label(f"Initial message"), id="message")
+        yield Center(Label(f"Initial message", id="message"))
 
     def on_input_changed(self, event: Input.Changed) -> None:
         for btn in self.query(".person-button"):
@@ -52,7 +49,6 @@ class MainScreen(Screen):
         if count == 0:
             self.replace_message("No matches")
         else:
-            app.bg_class = cycle(("bg-one", "bg-two"))
             self.replace_message(f"{self.me_query.count()} people")
             self.btns = []
             if value:
@@ -63,8 +59,7 @@ class MainScreen(Screen):
                     self.btns.append(btn)
 
     def replace_message(self, msg):
-        self.query_one("#message").remove()
-        self.mount(Center(Label(msg, id="message")))
+        self.query_one("#message").update(msg)
 
 class InputStripe(Horizontal):
     def compose(self):
@@ -82,6 +77,7 @@ class PersonButton(Button):
         self.person = person
 
     def on_button_pressed(self):
+        app.bg_class = cycle(("bg-one", "bg-two"))
         app.query_one("#content").remove()
         app.query_one("#body").mount(
             VerticalScroll(id="content")

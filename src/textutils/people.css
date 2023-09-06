@@ -69,3 +69,7 @@ Button {
 .bg-two {
     background: white 5%;
 }
+
+SaveCancel Horizontal Button {
+    height: 3;
+}
