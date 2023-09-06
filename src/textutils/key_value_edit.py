@@ -3,6 +3,8 @@ from textual.containers import Horizontal, Vertical, Center
 from textual.widgets import Input, TextArea, Button, Static
 from textual.screen import ModalScreen
 
+from textutils.lib import SaveCancel
+
 class KeyValueEditScreen(ModalScreen):
 
     DEFAULT_CSS = """\
@@ -60,27 +62,14 @@ KeyValueEditScreen {
                 self.value_field,
                 id="input-row"
             )
-            yield Center(
-                    Horizontal(
-                        Button("Save", variant="primary", id="save"),
-                        Button("Cancel", variant="error", id="cancel"),
-                        id="label-and-buttons"
-                    )
-            )
+            yield SaveCancel(self.callback)
+            yield Static("Underneath the buttons")
+
+    def callback(self, save):
+        retval = (self.key_field.value, self.value_field.text) if save else None
+        self.dismiss(retval)  # Assumes parent screen will capture this result
 
     def on_mount(self):
         self.key_field.value = self.key
         self.value_field.load_text(self.value)
         self.refresh()
-
-    def on_button_pressed(self: ModalScreen, event: Button.Pressed) -> None:
-        id = event.button.id
-        if id == "save":
-            retval = (self.query_one("#input-key").value,
-                      self.query_one("#input-value").text)
-        elif id == "cancel":
-            retval = None
-        else:
-            raise ValueError("Press of unknown button {id!r}")
-        self.dismiss(result=retval)
-        self.log(self.css_tree)
