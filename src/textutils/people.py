@@ -1,4 +1,5 @@
 from textual.app import App, ComposeResult
+from textual.widget import Widget
 from textual.widgets import Input, Label, Static, Button, TextArea
 from textual.containers import Horizontal, Vertical, VerticalScroll, Center
 from textual.screen import Screen
@@ -6,6 +7,8 @@ from textual.document import Document
 from rich.text import Text
 
 from textutils.key_value_edit import KeyValueEditScreen
+from textutils.lib import SaveCancel
+
 import mongoengine
 
 import os
@@ -61,14 +64,15 @@ class MainScreen(Screen):
     def replace_message(self, msg):
         self.query_one("#message").update(msg)
 
-class InputStripe(Horizontal):
+class InputStripe(Widget):
     def compose(self):
-        yield Label("Search: ")
-        yield Input(
-                placeholder="Enter (part of) a person's name...",
-                id="in-val",
-        )
-        yield Button(label="+", variant="primary", id="add-person")
+        with Horizontal():
+            yield Label("Search: ")
+            yield Input(
+                    placeholder="Enter (part of) a person's name...",
+                    id="in-val",
+            )
+            yield Button(label="+", variant="primary", id="add-person")
 
 class PersonButton(Button):
 
@@ -87,11 +91,14 @@ class PersonButton(Button):
         for k in self.person._fields_ordered:
             if k not in {'name', 'id'}:
                 self.add_new_row(k.capitalize(), getattr(self.person, k))
-
+        app.query_one("#content").mount(SaveCancel(self.save_back))
     def add_new_row(self, key, value, w_type=Static, clickable=True):
         app.query_one("#content").mount(
             ResultRow(key, str(value))
         )
+    def save_back(self, save_flag):
+        if save_flag:
+            print("Hallelujah")
 
 class ResultRow(Horizontal):
 

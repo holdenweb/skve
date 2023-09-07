@@ -9,24 +9,24 @@ class SaveCancel(Widget):
         self.callback = callback
 
     def compose(self):
-        with Center(id="save-cancel-button-row"):
-            with Horizontal(id="save-cancel-buttons"):
-               yield Button("Save", variant="primary", id="save")
-               yield Button("Cancel", variant="error", id="cancel")
+        with Center(classes=f"id-{self.id} save-cancel-button-row"):
+            with Horizontal(classes=f"id-{self.id} save-cancel-buttons"):
+               yield Button("Save", variant="primary", classes=f"save id-{self.id} save-cancel-save-button")
+               yield Button("Cancel", variant="error", classes=f"cancel id-{self.id} save-cancel-cancel-button")
 
     def on_button_pressed(self, event: Button.Pressed) -> None:
         id = event.button.id
-        self.callback(id == "save")
+        self.callback("save" in event.button.classes)
 
     DEFAULT_CSS = """\
 SaveCancel {
     height: auto;
 }
-#save-cancel-button-row {
+.save-cancel-button-row {
     min-height: 3;
 }
 
-#save-cancel-buttons {
+.save-cancel-buttons {
     width: auto;
     height: 3;
 }

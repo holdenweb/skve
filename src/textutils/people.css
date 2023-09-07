@@ -4,7 +4,11 @@ Screen {
 
 InputStripe {
     height: 3;
-    border: yellow 100%;
+    border: $primary-lighten-3 100%;
+}
+
+Input {
+    width: 75%;
 }
 
 #in-val {
