@@ -1,6 +1,6 @@
 from textual.app import ComposeResult
-from textual.containers import Horizontal, Vertical, Center
-from textual.widgets import Input, TextArea, Button, Static
+from textual.containers import Horizontal, Vertical
+from textual.widgets import TextArea, Static, Label
 from textual.screen import ModalScreen
 
 from textutils.lib import SaveCancel
@@ -32,11 +32,13 @@ KeyValueEditScreen {
 }
 """
 
-    def __init__(self, key, value, *args, **kwargs):
+    def __init__(self, key, value, editable_key=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.key = key
         self.value = value
-        self.key_field = Input(id="input-key")
+        self.editable_key = editable_key
+
+        self.key_field = Input(id="input-key") if editable_key else Label(key, id="input-key")
         self.value_field = TextArea(id="input-value")
         self.value_field.show_line_numbers = False
 

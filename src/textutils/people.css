@@ -7,6 +7,11 @@ InputStripe {
     border: $primary-lighten-3 100%;
 }
 
+ResultRow {
+    height: auto;
+    border: none;
+}
+
 Input {
     width: 75%;
 }

@@ -87,47 +87,57 @@ class PersonButton(Button):
             VerticalScroll(id="content")
         )
         self.add_new_row("Key", "Value", clickable=False)
-        self.add_new_row("Name", self.person.name, clickable=False)
+        self.add_new_row("name", self.person.name, clickable=True)
         for k in self.person._fields_ordered:
             if k not in {'name', 'id'}:
-                self.add_new_row(k.capitalize(), getattr(self.person, k))
+                self.add_new_row(k, getattr(self.person, k))
         app.query_one("#content").mount(SaveCancel(self.save_back))
+
     def add_new_row(self, key, value, w_type=Static, clickable=True):
         app.query_one("#content").mount(
-            ResultRow(key, str(value))
+            ResultRow(key, str(value), clickable=clickable)
         )
+
     def save_back(self, save_flag):
         if save_flag:
-            print("Hallelujah")
+            key_vals = dict((row.key, row.value) for row in self.app.query(".result-row") if row.clickable)
+            # Might get ugly with complex field types?
+            self.person.modify(**key_vals)
+        self.app.query_one("#content").remove_children()
 
-class ResultRow(Horizontal):
+class ResultRow(Widget):
 
-    def __init__(self, key, value):
-        super().__init__()
+    def __init__(self, key, value, clickable, *args, **kwargs):
+        super().__init__(*args, **kwargs)
         self.key = key
         self.value = value
+        self.clickable = clickable
         self.bg_class = next(app.bg_class)
         self.classes = f"result-row {self.bg_class}"
         self.key_field = Static(classes=f"key {self.bg_class}")
         self.value_field = Static(classes=f"value {self.bg_class}")
 
     def on_click(self, e):
-        app.push_screen(KeyValueEditScreen(self.key, self.value), self.stash_result)
+        if self.clickable:
+            app.push_screen(KeyValueEditScreen(self.key, self.value), self.stash_result)
 
     def compose(self):
-        yield Vertical(self.key_field, classes="key-col")
-        yield Vertical(self.value_field, classes="value-col")
+        with Horizontal():
+            yield Vertical(self.key_field, classes="key-col")
+            yield Vertical(self.value_field, classes="value-col")
 
     def on_mount(self):
         self.update()
 
     def stash_result(self, return_value):
         if return_value is not None:
+            # Some redundant code
             self.key, self.value = return_value
+            self.key = self.key.lower()
             self.update()
 
     def update(self):
-        self.key_field.update(Text(text=self.key, style="bold white"))
+        self.key_field.update(Text(text=self.key.capitalize(), style="bold white"))
         self.value_field.update(Text(text=self.value))
 
 app = PeopleApp()
