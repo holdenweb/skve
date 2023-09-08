@@ -1,6 +1,6 @@
 from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical
-from textual.widgets import TextArea, Static, Label
+from textual.widgets import Input, Static, Label
 from textual.screen import ModalScreen
 
 from textutils.lib import SaveCancel
@@ -15,7 +15,7 @@ KeyValueEditScreen {
 #input-value {
     width: 7fr;
     height: auto;
-    min-height: 5;
+    min-height: 1;
     border: yellow 100%;
     background: $primary 100%;
 }
@@ -39,8 +39,7 @@ KeyValueEditScreen {
         self.editable_key = editable_key
 
         self.key_field = Input(id="input-key") if editable_key else Label(key, id="input-key")
-        self.value_field = TextArea(id="input-value")
-        self.value_field.show_line_numbers = False
+        self.value_field = Input(id="input-value")
 
     def compose(self) -> ComposeResult:
         with Vertical(id="dialog"):
@@ -55,10 +54,10 @@ KeyValueEditScreen {
             yield SaveCancel(self.callback)
 
     def callback(self, save):
-        retval = (self.key_field.value, self.value_field.text) if save else None
+        retval = (self.key_field.value, self.value_field.value) if save else None
         self.dismiss(retval)  # Assumes parent screen will capture this result
 
     def on_mount(self):
         self.key_field.value = self.key
-        self.value_field.load_text(self.value)
+        self.value_field.value = self.value
         self.refresh()

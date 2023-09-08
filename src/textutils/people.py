@@ -1,9 +1,8 @@
 from textual.app import App, ComposeResult
 from textual.widget import Widget
-from textual.widgets import Input, Label, Static, Button, TextArea
+from textual.widgets import Input, Label, Static, Button
 from textual.containers import Horizontal, Vertical, VerticalScroll, Center
 from textual.screen import Screen
-from textual.document import Document
 from rich.text import Text
 
 from textutils.key_value_edit import KeyValueEditScreen
@@ -17,7 +16,6 @@ from itertools import cycle
 from .models import Person
 
 os.environ["TEXTUAL"] = "debug,devtools"
-EMPTY_DOC = Document("")
 
 class PeopleApp(App):
 
