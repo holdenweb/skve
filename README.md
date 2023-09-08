@@ -69,15 +69,17 @@ a screen that looks similar to this.
 
 ![SKiVE opening screen](images/screen1.png "SKiVE Opening Screen")
 
-Enter an "e" in the search window and two names will appear.
+Enter one or more letters in the search window and names will appear,
+the list being updated at each keystroke.
 
 Clicking on a name beings up that person's data in the results window,
 and clicking on any row allows you to edit that value (but not the key,
 currently). Saving a record changes its value for the rest of the
-run, but further runs will always begin with the same initial data.
+run, but any new run will always begin with the same initial data.
 
-Feel free to replace my tiny data with a more substantial corpus and
-hammer the code. I don't yet understand the textual testing framework,
+I don't yet understand the textual testing framework,
 which is why there aren't currently any tests to speak of.
+A recent release included more realistic test data from
+a random generator.
 
 I'll be happy to consider all feedback.
