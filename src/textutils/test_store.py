@@ -2,29 +2,14 @@
 """
 Testing database
 """
-data = {
-    'Steve Holden': (p1 := {
-        "name": "Steve Holden",
-        "one": "the",
-        "two": "quick",
-        "three": "fox",
-        "four": "jumps",
-        "five": "over",
-        "six": "the",
-        "seven": "lazy",
-        "eight": "dog",
-        "two_a": "brown"
-    }),
-    'Napoleon Bonaparte': (p2 := {
-        'name': 'Napoleon Bonaparte',
-        'able': 1,
-        'was': 2,
-        'I': 3,
-        'ere': 4,
-        'saw': 6,
-        'Elba': 7
-    })
-}
+import json
+
+with open("data.json") as j_data:
+    in_data = json.load(j_data)
+
+data = {}
+for item in in_data:
+    data[item['name']] = item
 
 def people_matching(s):
     return [data[k] for k in data if s.lower() in k.lower()]
