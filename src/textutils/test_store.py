@@ -31,7 +31,6 @@ def people_matching(s):
 
 def update_person(p: dict, kv: dict):
     p.update(kv)
-    print("UPDATED RECORD:", p)
     data[p['name']] = p
 
 if __name__ == '__main__':
@@ -43,4 +42,3 @@ if __name__ == '__main__':
             pm = people_matching(letter)
             assert len(pm) == 1
             assert pm[0] is person
-    print("Done")

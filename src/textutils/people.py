@@ -94,7 +94,6 @@ class PersonButton(Button):
         if save_flag:
             key_vals = dict((row.key, row.value) for row in self.app.query(".result-row") if row.clickable)
             # Might get ugly with complex field types?
-            print("KEY VALS:", key_vals)
             update_person(self.person, key_vals)
         self.app.query_one("#content").remove_children()
 
