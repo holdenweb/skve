@@ -7,6 +7,12 @@ import json
 with open("data.json") as j_data:
     in_data = json.load(j_data)
 
+def sort_key(x):
+    first, last = x['name'].split(None, 1)
+    return (last, first)
+
+in_data.sort(key=sort_key)
+
 data = {}
 for item in in_data:
     data[item['name']] = item
