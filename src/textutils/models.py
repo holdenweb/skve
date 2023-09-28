@@ -14,7 +14,6 @@ class Acronym(me.Document):
     linked_item = me.StringField()
     text_explanation = me.StringField()
 
-
 class Person(me.DynamicDocument):
     pass
 

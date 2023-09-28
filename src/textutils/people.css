@@ -82,3 +82,7 @@ Button {
 SaveCancel Horizontal Button {
     height: 3;
 }
+
+PersonLozenge {
+    width: auto;
+}

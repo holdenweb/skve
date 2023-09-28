@@ -3,16 +3,24 @@ from textual.widget import Widget
 from textual.widgets import Input, Label, Static, Button
 from textual.containers import Horizontal, Vertical, VerticalScroll, Center
 from textual.screen import Screen
+from textual.validation import Validator
+
 from rich.text import Text
 
 from textutils.key_value_edit import KeyValueEditScreen
 from textutils.lib import SaveCancel
 from textutils.test_store import people_matching, update_person
+from textual.validation import ValidationResult
 
 import os
 from itertools import cycle
 
 os.environ["TEXTUAL"] = "debug,devtools"
+
+class HasOneSpace(Validator):
+    def validate(self, value: str) -> ValidationResult:
+        print(self, value)
+        return self.success() if (c := value.count(" ")) == 1 else self.failure("Too many spaces" if c else "No spaces")
 
 class PeopleApp(App):
 
@@ -38,12 +46,11 @@ class MainScreen(Screen):
         yield Center(Label(f"Initial message", id="message"))
 
     def on_input_changed(self, event: Input.Changed) -> None:
-        for btn in self.query(".person-button"):
-            btn.remove()  # TODO: Use remove_children on parent
+        self.query_one("#buttons").remove_children()
         in_string = self.query_one(Input)
         value = in_string.value
         self.me_query = people_matching(value)
-        count = len(self.me_query)
+        count = self.current_count = len(self.me_query)
         if count == 0:
             self.replace_message("No matches")
         else:
@@ -55,6 +62,15 @@ class MainScreen(Screen):
                         btn := PersonButton(person, classes="person-button")
                     )
                     self.btns.append(btn)
+
+    def on_input_submitted(self, event):
+        in_string = self.query_one(Input)
+        value = in_string.value
+        if self.current_count:
+            self.replace_message(f"{self.current_count=} CONFLICTS")
+        else:
+            self.replace_message(f"Creating new person {value!r}")
+            # Or something. Soon. I promise ...
 
     def replace_message(self, msg):
         self.query_one("#message").update(msg)
@@ -87,8 +103,8 @@ class PersonButton(Button):
 
     def add_new_row(self, key, value, w_type=Static, clickable=True):
         app.query_one("#content").mount(
-            ResultRow(key, str(value), clickable=clickable)
-        )
+            ResultRow(key, str(value), validators=[HasOneSpace()], clickable=clickable)
+        )()
 
     def save_back(self, save_flag):
         if save_flag:
@@ -99,11 +115,12 @@ class PersonButton(Button):
 
 class ResultRow(Widget):
 
-    def __init__(self, key, value, clickable, *args, **kwargs):
+    def __init__(self, key, value, clickable, validators=[], *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.key = key
         self.value = value
         self.clickable = clickable
+        self.validators = validators
         self.bg_class = next(app.bg_class)
         self.classes = f"result-row {self.bg_class}"
         self.key_field = Static(classes=f"key {self.bg_class}")
@@ -111,7 +128,7 @@ class ResultRow(Widget):
 
     def on_click(self, e):
         if self.clickable:
-            app.push_screen(KeyValueEditScreen(self.key, self.value), self.stash_result)
+            app.push_screen(KeyValueEditScreen(self.key, self.value, validators=self.validators), self.stash_result)
 
     def compose(self):
         with Horizontal():
@@ -133,3 +150,7 @@ class ResultRow(Widget):
         self.value_field.update(Text(text=self.value))
 
 app = PeopleApp()
+
+
+if __name__ == '__main__':
+    app.run()

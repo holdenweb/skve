@@ -1,5 +1,7 @@
 ## SKVE - A simple key-value editor
 
+#### NOTE: Currently using a local version on textual!!
+
 Hi, and welcome to the Alpha 0.0.1 release of skve (pronounced "skyve").
 
 This is my first Textual application,

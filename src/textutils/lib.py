@@ -2,6 +2,14 @@ from textual.widget import Widget
 from textual.widgets import Button
 from textual.containers import Center, Horizontal, Vertical
 
+class DeleteMe(Button):
+    CSS = """DeleteMe {
+    width: 1; height: 1;
+    }
+    """
+    def __init__(self, *args, **kw):
+        super().__init__("x", *args, **kw)
+
 class SaveCancel(Widget):
 
     def __init__(self, callback):

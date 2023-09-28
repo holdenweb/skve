@@ -1,6 +1,6 @@
 from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical
-from textual.widgets import Input, Static, Label
+from textual.widgets import Input, Static, Label, Pretty
 from textual.screen import ModalScreen
 
 from textutils.lib import SaveCancel
@@ -32,14 +32,14 @@ KeyValueEditScreen {
 }
 """
 
-    def __init__(self, key, value, editable_key=False, *args, **kwargs):
+    def __init__(self, key, value, validators=(), editable_key=False, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.key = key
         self.value = value
         self.editable_key = editable_key
 
         self.key_field = Input(id="input-key") if editable_key else Label(key, id="input-key")
-        self.value_field = Input(id="input-value")
+        self.value_field = Input(id="input-value")  #,  validators=validators)
 
     def compose(self) -> ComposeResult:
         with Vertical(id="dialog"):
@@ -51,11 +51,22 @@ KeyValueEditScreen {
                 Static("Value", classes="title"),
                 self.value_field
             )
+            yield Pretty([])
             yield SaveCancel(self.callback)
 
+    def on_input_changed(self, event: Input.Changed) -> None:
+        # Updating the UI to show the reasons why validation failed
+        if event.validation_result is None:
+            return
+        newline = "\n"
+        if not event.validation_result.is_valid:
+            if event.validation_result.failure_descriptions:
+                self.app.notify(f"**** VALIDATION FAILURE ****{newline}{newline.join(msg for msg in event.validation_result.failure_descriptions)}")
+        else:
+            self.query_one(Pretty).update(None)
     def callback(self, save):
         retval = (self.key_field.value, self.value_field.value) if save else None
-        self.dismiss(retval)  # Assumes parent screen will capture this result
+        self.dismiss(retval)  # Parent screen should capture this result
 
     def on_mount(self):
         self.key_field.value = self.key
