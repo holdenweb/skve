@@ -26,6 +26,7 @@ Input {
 
 #message {
     height: 1;
+    link-hover-style: reverse;
 }
 
 Horizontal {
@@ -68,7 +69,7 @@ Button {
 }
 
 #buttons {
-    width: 18;
+    width: 20;
 }
 
 .bg-one {
@@ -81,8 +82,4 @@ Button {
 
 SaveCancel Horizontal Button {
     height: 3;
-}
-
-PersonLozenge {
-    width: auto;
 }

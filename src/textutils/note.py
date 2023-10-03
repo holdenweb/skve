@@ -14,7 +14,7 @@ from rich.text import Text
 
 from textutils.key_value_edit import KeyValueEditScreen
 from textutils.lib import SaveCancel
-from textutils.test_store import people_matching, update_person
+from textutils.demo_store import people_matching, update_person
 
 import os
 from itertools import cycle

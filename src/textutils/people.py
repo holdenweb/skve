@@ -9,7 +9,7 @@ from rich.text import Text
 
 from textutils.key_value_edit import KeyValueEditScreen
 from textutils.lib import SaveCancel
-from textutils.test_store import people_matching, update_person
+from textutils.demo_store import people_matching, update_person
 from textual.validation import ValidationResult
 
 import os
@@ -27,7 +27,15 @@ class PeopleApp(App):
     CSS_PATH = "people.css"
 
     def on_mount(self):
-        self.push_screen(MainScreen())
+        self.main_screen = MainScreen()
+        self.push_screen(self.main_screen)
+
+    def action_yes(self):
+        self.main_screen.replace_message("Yes, thanks!?")
+
+    def action_no(self):
+        self.main_screen.replace_message("OK then, not today!")
+
 
 class MainScreen(Screen):
 
@@ -43,7 +51,8 @@ class MainScreen(Screen):
             ),
             id="body"
         )
-        yield Center(Label(f"Initial message", id="message"))
+        msg = Text.from_markup("Test Yes/No message: [@click=app.yes]yes[/] [@click=app.no]no[/]")
+        yield Center(Label(msg, id="message"))
 
     def on_input_changed(self, event: Input.Changed) -> None:
         self.query_one("#buttons").remove_children()
