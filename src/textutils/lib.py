@@ -21,7 +21,7 @@ class YesNoText(Text):
         self.no_action = no_action
 
     def render(self):
-        return Text.from_markup(f"{self.msg}: [@click='{self.yes_action}']yes[/] [@click='{self.no_action}']no[/]")
+        return Text.from_markup(f"{self.msg}[@click='{self.yes_action}']yes[/] [@click='{self.no_action}']no[/]")
 
 
 class SaveCancel(Widget):
