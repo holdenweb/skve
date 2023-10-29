@@ -36,6 +36,8 @@ class PeopleApp(App):
     def action_no(self):
         self.main_screen.replace_message("OK then, not today!")
 
+    def on_click(self, e):
+        self.log(self.tree)
 
 class MainScreen(Screen):
 
@@ -46,7 +48,7 @@ class MainScreen(Screen):
                 id="buttons"
             ),
             VerticalScroll(
-                Static("This will be the results"),
+                Static("Click on a name in the left-hand panel to see details here"),
                 id="content"
             ),
             id="body"
@@ -96,7 +98,7 @@ class InputStripe(Widget):
 
 class PersonButton(Button):
 
-    def __init__(self, person, **kw):
+    def __init__(self, person: dict, **kw):
         super().__init__(person['name'], **kw)
         self.person = person
 
@@ -124,7 +126,7 @@ class PersonButton(Button):
 
 class ResultRow(Widget):
 
-    def __init__(self, key, value, clickable, validators=[], *args, **kwargs):
+    def __init__(self, key, value, clickable=True, validators=[], *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.key = key
         self.value = value
