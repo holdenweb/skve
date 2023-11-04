@@ -1,5 +1,6 @@
 from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical
+from textual.widget import Widget
 from textual.widgets import Input, Static, Label, Pretty
 from textual.screen import ModalScreen
 
@@ -32,14 +33,27 @@ KeyValueEditScreen {
 }
 """
 
-    def __init__(self, key, value, validators=(), editable_key=False, *args, **kwargs):
+
+    def __init__(
+        self,
+        key,
+        value,
+        validators=(),
+        editable_key=False,
+        widget_type: Widget = Static,
+        *args,
+        **kwargs,
+    ):
         super().__init__(*args, **kwargs)
         self.key = key
         self.value = value
         self.editable_key = editable_key
+        self.widget_type = widget_type
 
-        self.key_field = Input(id="input-key") if editable_key else Label(key, id="input-key")
-        self.value_field = Input(id="input-value")  #,  validators=validators)
+        self.key_field = (
+            Input(id="input-key") if editable_key else Label(key, id="input-key")
+        )
+        self.value_field = self.widget_type(id="input-value")  # ,  validators=validators)
 
     def compose(self) -> ComposeResult:
         with Vertical(id="dialog"):
@@ -51,7 +65,7 @@ KeyValueEditScreen {
                 Static("Value", classes="title"),
                 self.value_field
             )
-            yield Pretty([])
+            yield Static("", id="kve-msg")
             yield SaveCancel(self.callback)
 
     def on_input_changed(self, event: Input.Changed) -> None:
@@ -63,7 +77,8 @@ KeyValueEditScreen {
             if event.validation_result.failure_descriptions:
                 self.app.notify(f"**** VALIDATION FAILURE ****{newline}{newline.join(msg for msg in event.validation_result.failure_descriptions)}")
         else:
-            self.query_one(Pretty).update(None)
+            self.query_one("#kde-msg").update("Validates OK")
+
     def callback(self, save):
         retval = (self.key_field.value, self.value_field.value) if save else None
         self.dismiss(retval)  # Parent screen should capture this result

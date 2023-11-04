@@ -47,6 +47,10 @@ Button {
     border: none;
 }
 
+PersonButton {
+    text-align: left;
+}
+
 .key-col {
     width: 1fr;
     min-height: 1;

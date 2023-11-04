@@ -57,6 +57,5 @@ SaveCancel Horizontal {
 
 SaveCancel Horizontal Button {
     height: 3;
-    outline: white 75%;
 }
 """
