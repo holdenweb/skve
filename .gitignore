@@ -125,3 +125,5 @@ dmypy.json
 
 # WingPro project files
 *.wp?
+
+experiments/
