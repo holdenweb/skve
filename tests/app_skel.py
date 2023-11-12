@@ -1,6 +1,9 @@
-from textual.app import App, ComposeResult
+from __future__ import annotations
 
+from textual.app import App
+from textual.app import ComposeResult
 from textutils.lib import SaveCancel
+
 
 class BaseApp(App):
     """A Textual app in which to drop test functionality."""
@@ -10,10 +13,11 @@ class BaseApp(App):
         self.dark = not self.dark
 
     def report(self, arg):
-        print(f"ARG: {True}")
+        print(f'ARG: {True}')
         self.panic(self.tree)
+
 
 app = BaseApp()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     app.run()

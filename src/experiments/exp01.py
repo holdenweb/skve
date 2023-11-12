@@ -17,8 +17,9 @@ class TestApp(App):
     def done(self, result):
         self.exit(message=f'Done!\nresult: {result}')
 
-    #def compose(self) -> ComposeResult:
-        #yield Static("Yield components in compose() method")
+    # def compose(self) -> ComposeResult:
+        # yield Static("Yield components in compose() method")
+
 
 app = TestApp()
 

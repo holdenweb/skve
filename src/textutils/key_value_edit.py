@@ -1,10 +1,16 @@
-from textual.app import ComposeResult
-from textual.containers import Horizontal, Vertical
-from textual.widget import Widget
-from textual.widgets import Input, Static, Label, Pretty
-from textual.screen import ModalScreen
+from __future__ import annotations
 
+from textual.app import ComposeResult
+from textual.containers import Horizontal
+from textual.containers import Vertical
+from textual.screen import ModalScreen
+from textual.widget import Widget
+from textual.widgets import Input
+from textual.widgets import Label
+from textual.widgets import Pretty
+from textual.widgets import Static
 from textutils.lib import SaveCancel
+
 
 class KeyValueEditScreen(ModalScreen):
 
@@ -33,14 +39,13 @@ KeyValueEditScreen {
 }
 """
 
-
     def __init__(
         self,
         key,
         value,
         validators=(),
         editable_key=False,
-        widget_type: Widget = Static,
+        widget_type: Widget = Input,
         *args,
         **kwargs,
     ):
@@ -51,36 +56,43 @@ KeyValueEditScreen {
         self.widget_type = widget_type
 
         self.key_field = (
-            Input(id="input-key") if editable_key else Label(key, id="input-key")
+            Input(id='input-key') if editable_key else Label(key, id='input-key')
         )
-        self.value_field = self.widget_type(id="input-value")  # ,  validators=validators)
+        self.value_field = self.widget_type(
+            id='input-value', validators=validators,
+        )
 
     def compose(self) -> ComposeResult:
-        with Vertical(id="dialog"):
+        with Vertical(id='dialog'):
             yield Horizontal(
-                Static("Key", classes="title"),
-                self.key_field
+                Static('Key', classes='title'),
+                self.key_field,
             )
             yield Horizontal(
-                Static("Value", classes="title"),
-                self.value_field
+                Static('Value', classes='title'),
+                self.value_field,
             )
-            yield Static("", id="kve-msg")
+            yield Static('', id='kve-msg')
             yield SaveCancel(self.callback)
 
     def on_input_changed(self, event: Input.Changed) -> None:
         # Updating the UI to show the reasons why validation failed
         if event.validation_result is None:
             return
-        newline = "\n"
+        newline = '\n'
         if not event.validation_result.is_valid:
             if event.validation_result.failure_descriptions:
-                self.app.notify(f"**** VALIDATION FAILURE ****{newline}{newline.join(msg for msg in event.validation_result.failure_descriptions)}")
+                self.app.notify(
+                    f'**** VALIDATION FAILURE ****{newline}{newline.join(msg for msg in event.validation_result.failure_descriptions)}',
+                )
         else:
-            self.query_one("#kde-msg").update("Validates OK")
+            self.query_one('#kde-msg').update('Validates OK')
 
     def callback(self, save):
-        retval = (self.key_field.value, self.value_field.value) if save else None
+        retval = (
+            self.key_field.value,
+            self.value_field.value,
+        ) if save else None
         self.dismiss(retval)  # Parent screen should capture this result
 
     def on_mount(self):

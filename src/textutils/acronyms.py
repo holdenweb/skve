@@ -1,56 +1,73 @@
-from textual.app import App, ComposeResult
-from textual.validation import Function, Number, ValidationResult, Validator
-from textual.widgets import Input, Label, Pretty, Static, Footer, Button
-from textual.containers import Container, Horizontal, Vertical, VerticalScroll, Center
-import mongoengine
+from __future__ import annotations
+
 import importlib.resources as ir
 import os
 import sys
 
-print("INFO: About to import Acronym")
-from .models import Acronym
-print("INFO: IMPORTED")
-print("__NAME__:", __name__)
+import mongoengine
+from textual.app import App
+from textual.app import ComposeResult
+from textual.containers import Center
+from textual.containers import Container
+from textual.containers import Horizontal
+from textual.containers import Vertical
+from textual.containers import VerticalScroll
+from textual.validation import Function
+from textual.validation import Number
+from textual.validation import ValidationResult
+from textual.validation import Validator
+from textual.widgets import Button
+from textual.widgets import Footer
+from textual.widgets import Input
+from textual.widgets import Label
+from textual.widgets import Pretty
+from textual.widgets import Static
 
-os.environ["TEXTUAL"] = "debug,devtools"
+from .models import Acronym
+
+print('INFO: About to import Acronym')
+print('INFO: IMPORTED')
+print('__NAME__:', __name__)
+
+os.environ['TEXTUAL'] = 'debug,devtools'
+
 
 def load_css(name=__name__):
     module = sys.modules[name]
     m_path = ir.files(module)
-    print("MODULE PATH:", m_path)
-    with ir.as_file(m_path / f"styles.css") as f_path:
+    print('MODULE PATH:', m_path)
+    with ir.as_file(m_path / f'styles.css') as f_path:
         with open(f_path) as in_file:
             return in_file.read()
 
+
 class InputApp(App):
 
-    CSS_PATH = "acronyms.css"
+    CSS_PATH = 'acronyms.css'
 
     def __init__(self):
         super().__init__()
 
-
     def compose(self) -> ComposeResult:
         yield Horizontal(
             Input(
-                placeholder="Enter (the beginning of) an acronym...",
-                id="in_val,"
-                ),
-            id="question-box"
+                placeholder='Enter (the beginning of) an acronym...',
+                id='in_val,',
+            ),
+            id='question-box',
         )
         yield Horizontal(
             VerticalScroll(
-                id="buttons"
-                ),
+                id='buttons',
+            ),
             VerticalScroll(
-                Static(""),
-                id="content"
-                ),
-            id="body"
+                Static(''),
+                id='content',
+            ),
+            id='body',
         )
 
-        yield Center(Label(f"Initial message"), id="message")
-
+        yield Center(Label(f'Initial message'), id='message')
 
     def on_input_changed(self, event: Input.Changed) -> None:
         # Updating the UI to show the reasons why validation failed
@@ -61,42 +78,46 @@ class InputApp(App):
         self.me_query = Acronym.objects(acronym__istartswith=value)
         count = self.me_query.count()
         if count == 0:
-            self.replace_message("No matches")
+            self.replace_message('No matches')
         else:
-            self.replace_message(f"{self.me_query.count()} acronyms")
+            self.replace_message(f'{self.me_query.count()} acronyms')
             self.btns = []
             if value:
-                for acr in self.me_query.order_by("acronym"):
-                    self.query_one("#buttons").mount(
-                        btn := ExplainButton(acr)
+                for acr in self.me_query.order_by('acronym'):
+                    self.query_one('#buttons').mount(
+                        btn := ExplainButton(acr),
                     )
                     self.btns.append(btn)
 
     def replace_message(self, msg):
-        self.query_one("#message").remove()
-        self.mount(Center(Label(msg), id="message"))
+        self.query_one('#message').remove()
+        self.mount(Center(Label(msg), id='message'))
+
 
 class ExplainButton(Button):
     def __init__(self, acronym):
         super().__init__(acronym.acronym)
         self.title = acronym.title
         self.explanation = acronym.explanation
-        print("Acronym:", acronym.acronym, self.title, self.explanation)
+        print('Acronym:', acronym.acronym, self.title, self.explanation)
 
     def on_button_pressed(self):
-        app.query_one("#content").remove()
-        app.query_one("#body").mount(
+        app.query_one('#content').remove()
+        app.query_one('#body').mount(
             VerticalScroll(
-                Static(f"{self.title}\n\n{self.explanation}"),
-                id="content"
-            )
+                Static(f'{self.title}\n\n{self.explanation}'),
+                id='content',
+            ),
         )
 
+
 app = InputApp()
-dbcon = mongoengine.connect("acronyms")
+dbcon = mongoengine.connect('acronyms')
+
 
 def main(args=sys.argv):
     return app.run()
 
-if __name__ == "__main__":
+
+if __name__ == '__main__':
     main()

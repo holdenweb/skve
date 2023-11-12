@@ -3,8 +3,10 @@ models.py
 
 Interactions for the acronyms app.
 """
+from __future__ import annotations
 
 import mongoengine as me
+
 
 class Acronym(me.Document):
     acronym = me.StringField(required=True)
@@ -14,6 +16,6 @@ class Acronym(me.Document):
     linked_item = me.StringField()
     text_explanation = me.StringField()
 
+
 class Person(me.DynamicDocument):
     pass
-
