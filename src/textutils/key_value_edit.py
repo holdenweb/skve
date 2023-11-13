@@ -86,7 +86,7 @@ KeyValueEditScreen {
                     f'**** VALIDATION FAILURE ****{newline}{newline.join(msg for msg in event.validation_result.failure_descriptions)}',
                 )
         else:
-            self.query_one('#kde-msg').update('Validates OK')
+            self.query_one('#kve-msg').update('Validates OK')
 
     def callback(self, save):
         retval = (

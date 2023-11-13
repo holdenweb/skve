@@ -25,6 +25,9 @@ from textutils.demo_store import update_person
 from textutils.key_value_edit import KeyValueEditScreen
 from textutils.lib import SaveCancel
 from textutils.validators import HasOneSpace
+from textutils.result_row import ResultRow
+
+from typing import Optional
 
 os.environ['TEXTUAL'] = 'debug,devtools'
 
@@ -83,7 +86,7 @@ class PeopleApp(App):
 
 
 class ContentPane(VerticalScroll):
-    def add_result_row(self, key, value, widget_type=Static, clickable=True):
+    def add_result_row(self, key, value, widget_type=Input, clickable=True, validators: Validator | None = None):
         self.mount(
             ResultRow(
                 key,
@@ -200,60 +203,6 @@ class PersonButton(Button):
         self.app.query_one('#content').remove_children()
 
 
-class ResultRow(Widget):
-    def __init__(
-        self,
-        key,
-        value,
-        clickable=True,
-        validators=[],
-        widget_type: Widget = Static,
-        *args,
-        **kwargs,
-    ):
-        super().__init__(*args, **kwargs)
-        self.key = key
-        self.value = value
-        self.clickable = clickable
-        self.validators = validators
-        self.bg_class = next(app.bg_class)
-        self.widget_type = widget_type
-        self.classes = f'result-row {self.bg_class}'
-        self.key_field = Static(classes=f'key {self.bg_class}')
-        self.value_field = Static(classes=f'value {self.bg_class}')
-
-    def on_click(self, e):
-        if self.clickable:
-            app.push_screen(
-                KeyValueEditScreen(
-                    self.key,
-                    self.value,
-                    validators=self.validators,
-                    widget_type=self.widget_type,
-                ),
-                self.stash_result,
-            )
-
-    def compose(self):
-        with Horizontal():
-            yield Vertical(self.key_field, classes='key-col')
-            yield Vertical(self.value_field, classes='value-col')
-
-    def on_mount(self):
-        self.update()
-
-    def stash_result(self, return_value):
-        if return_value is not None:
-            # Some redundant code
-            self.key, self.value = return_value
-            self.key = self.key.lower()
-            self.update()
-
-    def update(self):
-        self.key_field.update(
-            Text(text=self.key.capitalize(), style='bold white'),
-        )
-        self.value_field.update(Text(text=self.value))
 
 
 app = PeopleApp()

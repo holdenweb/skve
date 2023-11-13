@@ -1,3 +1,5 @@
+from typing import Optional
+
 from rich.text import Text
 from textual.app import App
 from textual.app import ComposeResult
@@ -14,6 +16,7 @@ from textual.widgets import Label
 from textual.widgets import Static
 from textual.widgets import TextArea
 
+from textutils.key_value_edit import KeyValueEditScreen
 
 class ResultRow(Widget):
 
@@ -22,8 +25,8 @@ class ResultRow(Widget):
         key,
         value,
         clickable=True,
-        validators=[],
-        widget_type: Widget = Static,
+        validators: Optional[list[Validator]] = None,
+        widget_type: Widget = Input,
         *args,
         **kwargs,
     ):
@@ -31,8 +34,8 @@ class ResultRow(Widget):
         self.key = key
         self.value = value
         self.clickable = clickable
-        self.validators = validators
-        self.bg_class = next(app.bg_class)
+        self.validators = validators if validators is not None else []
+        self.bg_class = next(self.app.bg_class)
         self.widget_type = widget_type
         self.classes = f'result-row {self.bg_class}'
         self.key_field = Static(classes=f'key {self.bg_class}')
